@@ -30,15 +30,15 @@ package rps:
     def computer(result: ActionOutcome): Score =
       this.copy(computer = winnerScores(result, computer))
 
-  final case class BattelResult(
+  final case class BattleResult(
       player: ActionOutcome = ActionOutcome.Draw,
       computer: ActionOutcome = ActionOutcome.Draw
   )
 
-  def battle(action1: Action, action2: Action): BattelResult =
-    if action1 === action2 then BattelResult()
-    else if action1.losingTo(action2) then BattelResult(ActionOutcome.Lose, ActionOutcome.Win)
-    else BattelResult(ActionOutcome.Win, ActionOutcome.Lose)
+  def battle(action1: Action, action2: Action): BattleResult =
+    if action1 === action2 then BattleResult()
+    else if action1.losingTo(action2) then BattleResult(ActionOutcome.Lose, ActionOutcome.Win)
+    else BattleResult(ActionOutcome.Win, ActionOutcome.Lose)
 
   def computerNextMove[F[_]: Random: Functor]: F[Action] =
     Random[F].nextIntBounded(Action.values.length).map(Action.fromOrdinal)
@@ -59,7 +59,7 @@ package rps:
       .map(_.get)
 
   def updateScore[F[_]: Console: Monad](
-      result: BattelResult,
+      result: BattleResult,
       score: Ref[F, Score]
   ): F[Unit] =
     for
